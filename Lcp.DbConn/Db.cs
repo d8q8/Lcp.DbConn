@@ -16,7 +16,7 @@ namespace Lcp.DbConn
     /// </summary>
     public enum MyType
     {
-        Access2003, Access2007, Access2013, Mssql, Mysql, Oracle, Sqlite
+        Access2003, Access2007, Access2013, Access2016, Mssql, Mysql, Oracle, Sqlite
     }
     #endregion
     public class Db
@@ -65,6 +65,11 @@ namespace Lcp.DbConn
                 case MyType.Access2013:
                     filepath = Application.StartupPath == Environment.CurrentDirectory ? Application.StartupPath + "\\" + connStr : HttpContext.Current.Server.MapPath(connStr);
                     conn = string.Format(@"Provider=Microsoft.ACE.OLEDB.15.0;Data Source={0};Persist Security Info=False", filepath);
+                    builder.Register(c => new Access(conn)).As<IDataBase>();
+                    break;
+                case MyType.Access2016:
+                    filepath = Application.StartupPath == Environment.CurrentDirectory ? Application.StartupPath + "\\" + connStr : HttpContext.Current.Server.MapPath(connStr);
+                    conn = string.Format(@"Provider=Microsoft.ACE.OLEDB.16.0;Data Source={0};Persist Security Info=False", filepath);
                     builder.Register(c => new Access(conn)).As<IDataBase>();
                     break;
                 case MyType.Sqlite:
