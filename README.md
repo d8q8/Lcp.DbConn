@@ -22,13 +22,21 @@ public enum MyType
 2>数据库配置
 ```c#
 //调用代码配置在web.config里，数据库路径为：Access，Sqlite为相对路径，其他为全路径
+//connectionStrings优先使用,没有则采用appSettings
 <connectionStrings>
-    <add name="access" connectionString="数据库" />
-    <add name="sqlite" connectionString="数据库" />
-    <add name="sqlserver" connectionString="server=(local);uid=用户名;pwd=密码;database=数据库" />
-    <add name="oracle" connectionString="Provider=MSDAORA.1;Password=密码;User ID=用户名;Data Source=数据库" />
-    <add name="mysql" connectionString="server=localhost;user id=用户名;password=密码;database=数据库" />
+    <add name="access" connectionString="数据库" providerName="System.Data.OleDb" />
+    <add name="sqlite" connectionString="数据库" providerName="System.Data.SQLite" />
+    <add name="sqlserver" connectionString="server=(local);uid=用户名;pwd=密码;database=数据库" providerName="System.Data.SqlClient" />
+    <add name="oracle" connectionString="Provider=MSDAORA.1;Password=密码;User ID=用户名;Data Source=数据库" providerName="System.Data.OracleClient" />
+    <add name="mysql" connectionString="server=localhost;user id=用户名;password=密码;database=数据库" providerName="System.Data.MySqlClient" />
 </connectionStrings>
+//--------------------------------------------------------------------------------------------------------------
+<appSettings>
+    <add key="access" value="数据库"/>
+    <add key="sqlite" value="数据库" />
+    <add key="sqlserver" value="数据库" />
+    <add key="mysql" value="server=localhost;user id=用户名;password=密码;database=数据库"/>
+</appSettings>
 ```
 3>简单调用方式
 ```c#

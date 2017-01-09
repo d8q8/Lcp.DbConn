@@ -86,10 +86,10 @@ namespace Lcp.DbConn
                     conn = connStr;
                     builder.Register(c => new Mssql(conn)).As<IDataBase>();
                     break;
-                //case MyType.Oracle:
-                //    conn = connStr;
-                //    builder.Register(c => new Oracle(conn)).As<IDataBase>();
-                //    break;
+                case MyType.Oracle:
+                    conn = connStr;
+                    builder.Register(c => new Oracle(conn)).As<IDataBase>();
+                    break;
             }
 
             using (var container = builder.Build())

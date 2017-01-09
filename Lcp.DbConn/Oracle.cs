@@ -1,24 +1,25 @@
-﻿using System;
+﻿using Oracle.ManagedDataAccess.Client;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Lcp.DbConn
 {
-    public class Mssql : IDataBase, IDisposable
+    public class Oracle: IDataBase, IDisposable
     {
         public string Name { get { return "Mssql"; } }
-        private SqlConnection _connSql;
+        private OracleConnection _connSql;
         private readonly string _dataSql;
         private bool _disposed;
         /// <summary>
         /// 初始化MSSQL数据库
         /// </summary>
         /// <param name="connstr"></param>
-        public Mssql(string connstr)
+        public Oracle(string connstr)
         {
             _dataSql = connstr;
         }
@@ -30,7 +31,7 @@ namespace Lcp.DbConn
         /// <returns></returns>
         public IDataParameter MyParams(string name, object value)
         {
-            return new SqlParameter(name, value);
+            return new OracleParameter(name, value);
         }
 
         #region 基本数据库操作
@@ -40,7 +41,7 @@ namespace Lcp.DbConn
         public void Open()
         {
             var connstr = _dataSql;
-            _connSql = new SqlConnection(connstr);
+            _connSql = new OracleConnection(connstr);
             if (_connSql.State == ConnectionState.Open) return;
             try
             {
@@ -74,7 +75,7 @@ namespace Lcp.DbConn
         /// <summary>
         /// 析构函数
         /// </summary>
-        ~Mssql()
+        ~Oracle()
         {
             Dispose(false);
         }
@@ -182,9 +183,9 @@ namespace Lcp.DbConn
         public DataSet GetDataSet(string sql, CommandType ctype, int startindex, int pagesize, string dataname, params IDataParameter[] param)
         {
             Open();
-            var cmd = new SqlCommand();
+            var cmd = new OracleCommand();
             PrepareCommand(cmd, _connSql, null, ctype, sql, param);
-            using (var dap = new SqlDataAdapter(cmd))
+            using (var dap = new OracleDataAdapter(cmd))
             {
                 var ds = new DataSet();
                 try
@@ -195,7 +196,7 @@ namespace Lcp.DbConn
                     cmd.Dispose();
                     return ds;
                 }
-                catch (SqlException ex)
+                catch (OracleException ex)
                 {
                     throw new Exception(ex.Message);
                 }
@@ -217,9 +218,9 @@ namespace Lcp.DbConn
         public DataSet GetDataSet(string sql, CommandType ctype, string dataname, params IDataParameter[] param)
         {
             Open();
-            var cmd = new SqlCommand();
+            var cmd = new OracleCommand();
             PrepareCommand(cmd, _connSql, null, ctype, sql, param);
-            using (var dap = new SqlDataAdapter(cmd))
+            using (var dap = new OracleDataAdapter(cmd))
             {
                 var ds = new DataSet();
                 try
@@ -230,7 +231,7 @@ namespace Lcp.DbConn
                     cmd.Dispose();
                     return ds;
                 }
-                catch (SqlException ex)
+                catch (OracleException ex)
                 {
                     throw new Exception(ex.Message);
                 }
@@ -251,7 +252,7 @@ namespace Lcp.DbConn
         {
             Open();
             int i;
-            var cmd = new SqlCommand();
+            var cmd = new OracleCommand();
             try
             {
                 PrepareCommand(cmd, _connSql, null, ctype, sql, param);
@@ -276,7 +277,7 @@ namespace Lcp.DbConn
         public object GetExecuteScalar(string sql, CommandType ctype, params IDataParameter[] param)
         {
             Open();
-            var cmd = new SqlCommand();
+            var cmd = new OracleCommand();
             try
             {
                 PrepareCommand(cmd, _connSql, null, ctype, sql, param);
@@ -301,7 +302,7 @@ namespace Lcp.DbConn
         public IDataReader GetDataReader(string sql, CommandType ctype, params IDataParameter[] param)
         {
             Open();
-            var cmd = new SqlCommand();
+            var cmd = new OracleCommand();
             PrepareCommand(cmd, _connSql, null, ctype, sql, param);
             var dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
             cmd.Parameters.Clear();
@@ -318,7 +319,7 @@ namespace Lcp.DbConn
         /// <param name="cmdType">指定如何解释命令字符串</param>
         /// <param name="cmdText">字符串</param>
         /// <param name="cmdParms">参数</param>
-        private static void PrepareCommand(SqlCommand cmd, SqlConnection conn, SqlTransaction trans, CommandType cmdType, string cmdText, params IDataParameter[] cmdParms)
+        private static void PrepareCommand(OracleCommand cmd, OracleConnection conn, OracleTransaction trans, CommandType cmdType, string cmdText, params IDataParameter[] cmdParms)
         {
             cmd.Connection = conn;
             cmd.CommandText = cmdText;
@@ -329,7 +330,7 @@ namespace Lcp.DbConn
             cmd.CommandType = cmdType;
 
             if (cmdParms == null) return;
-            foreach (var parameter in cmdParms.Cast<SqlParameter>())
+            foreach (var parameter in cmdParms.Cast<OracleParameter>())
             {
                 if ((parameter.Direction == ParameterDirection.InputOutput || parameter.Direction == ParameterDirection.Input) &&
                     (parameter.Value == null))
@@ -358,12 +359,12 @@ namespace Lcp.DbConn
         /// <returns>返回被缓存的参数数组</returns>
         public IDataParameter[] GetCachedParameters(string cacheKey)
         {
-            var cachedParms = (SqlParameter[])_parmCache[cacheKey];
+            var cachedParms = (OracleParameter[])_parmCache[cacheKey];
             if (cachedParms == null)
                 return null;
             IDataParameter[] clonedParms = { };
             for (int i = 0, j = cachedParms.Length; i < j; i++)
-                clonedParms[i] = (SqlParameter)((ICloneable)cachedParms[i]).Clone();
+                clonedParms[i] = (OracleParameter)((ICloneable)cachedParms[i]).Clone();
             return clonedParms;
         }
 
