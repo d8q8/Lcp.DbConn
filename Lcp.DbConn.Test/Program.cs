@@ -20,7 +20,7 @@ namespace Lcp.DbConn.Test
             //{
             //    const string sql = "select * from admin";
             //    var dt = _db.MyDt(sql);
-            //    Console.Write("用户名:{0},密码:{1}", dt.Rows[0]["username"], dt.Rows[0]["password"]);
+            //    Console.WriteLine("用户名:{0},密码:{1}", dt.Rows[0]["username"], dt.Rows[0]["password"]);
             //}
 
             //连接Sqlite数据库
@@ -28,7 +28,7 @@ namespace Lcp.DbConn.Test
             {
                 const string sql = "select * from admin";
                 var dt = _db.MyDt(sql);
-                Console.Write("用户名:{0},密码:{1}", dt.Rows[0]["username"], dt.Rows[0]["password"]);
+                Console.WriteLine("用户名:{0},密码:{1}", dt.Rows[0]["username"], dt.Rows[0]["password"]);
             }
 
             //连接Mysql数据库
@@ -42,7 +42,11 @@ namespace Lcp.DbConn.Test
             //    }
             //}
 
-            Console.ReadLine();
+            //暂停
+            //Console.ReadLine();
+
+            Console.Write("按任意键退出...");
+            Console.ReadKey(true);
         }
     }
 }

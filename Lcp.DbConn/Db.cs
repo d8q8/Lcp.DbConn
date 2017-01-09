@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -35,7 +36,7 @@ namespace Lcp.DbConn
         //    <add name="sqlserver" connectionString="data source=.;initial catalog=数据库;user id=用户名;MultipleActiveResultSets=True;App=EntityFramework" providerName="System.Data.SqlClient" />
         //</connectionStrings>
         #endregion
-        
+
         /// <summary>
         /// 处理连接多数据库采用IOC注入
         /// </summary>
@@ -44,8 +45,8 @@ namespace Lcp.DbConn
         /// <returns></returns>
         public static DataBaseManager GetConn(MyType mt = MyType.Access2003, string connstr = "access")
         {
-            //var connStr = ConfigurationManager.AppSettings[connstr].ToString(CultureInfo.InvariantCulture);
-            var connStr = ConfigurationManager.ConnectionStrings[connstr].ConnectionString;
+            //配置节点
+            var connStr = ConfigurationManager.ConnectionStrings[connstr] != null ? ConfigurationManager.ConnectionStrings[connstr].ConnectionString : ConfigurationManager.AppSettings[connstr].ToString(CultureInfo.InvariantCulture);
             var filepath = string.Empty;
             var conn = string.Empty;
             var builder = new ContainerBuilder();
@@ -53,7 +54,7 @@ namespace Lcp.DbConn
             switch (mt)
             {
                 case MyType.Access2003:
-                    filepath = Application.StartupPath == Environment.CurrentDirectory? Application.StartupPath + "\\" + connStr: HttpContext.Current.Server.MapPath(connStr);
+                    filepath = Application.StartupPath == Environment.CurrentDirectory ? Application.StartupPath + "\\" + connStr : HttpContext.Current.Server.MapPath(connStr);
                     conn = string.Format(@"Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};", filepath);
                     builder.Register(c => new Access(conn)).As<IDataBase>();
                     break;
