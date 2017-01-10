@@ -34,12 +34,12 @@ namespace Lcp.DbConn.Test
             #endregion
 
             #region 连接Sqlite数据库
-            //using (var _db = Db.GetConn(MyType.Sqlite, "sqlite"))
-            //{
-            //    const string sql = @"select * from admin";
-            //    var dt = _db.MyDt(sql);
-            //    Console.WriteLine("用户名:{0},密码:{1}", dt.Rows[0]["username"], dt.Rows[0]["password"]);
-            //}
+            using (var _db = Db.GetConn(MyType.Sqlite, "sqlite"))
+            {
+                const string sql = @"select * from admin";
+                var dt = _db.MyDt(sql);
+                Console.WriteLine("用户名:{0},密码:{1}", dt.Rows[0]["username"], dt.Rows[0]["password"]);
+            }
             #endregion
 
             #region 连接Mysql数据库
@@ -67,12 +67,12 @@ namespace Lcp.DbConn.Test
             #endregion
 
             #region 连接Oracle数据库
-            using (var _db = Db.GetConn(MyType.Oracle, "oracle"))
-            {
-                const string sql = @"select * from ADMIN";
-                var dt = _db.MyDt(sql);
-                Console.WriteLine("用户名:{0},密码:{1}", dt.Rows[0]["username"], dt.Rows[0]["password"]);
-            }
+            //using (var _db = Db.GetConn(MyType.Oracle, "oracle"))
+            //{
+            //    const string sql = @"select * from ADMIN";
+            //    var dt = _db.MyDt(sql);
+            //    Console.WriteLine("用户名:{0},密码:{1}", dt.Rows[0]["username"], dt.Rows[0]["password"]);
+            //}
             #endregion
             //暂停
             //Console.ReadLine();
