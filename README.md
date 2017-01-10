@@ -22,21 +22,24 @@ public enum MyType
 2>数据库配置
 ```c#
 //调用代码配置在web.config里，数据库路径为：Access，Sqlite为相对路径，其他为全路径
-//connectionStrings优先使用,没有则采用appSettings
-<connectionStrings>
-    <add name="access" connectionString="数据库" providerName="System.Data.OleDb" />
-    <add name="sqlite" connectionString="数据库" providerName="System.Data.SQLite" />
-    <add name="sqlserver" connectionString="server=(local);uid=用户名;pwd=密码;database=数据库" providerName="System.Data.SqlClient" />
-    <add name="oracle" connectionString="Provider=MSDAORA.1;Password=密码;User ID=用户名;Data Source=数据库" providerName="System.Data.OracleClient" />
-    <add name="mysql" connectionString="server=localhost;user id=用户名;password=密码;database=数据库" providerName="System.Data.MySqlClient" />
-</connectionStrings>
-//--------------------------------------------------------------------------------------------------------------
-<appSettings>
-    <add key="access" value="数据库"/>
-    <add key="sqlite" value="数据库" />
-    <add key="sqlserver" value="数据库" />
-    <add key="mysql" value="server=localhost;user id=用户名;password=密码;database=数据库"/>
-</appSettings>
+//==============================================================================
+//以下两种节点配置选一种即可
+    <appSettings>
+        <add key="access" value="数据库"/>
+        <add key="access2007" value="数据库"/>
+        <add key="sqlite" value="数据库"/>
+        <add key="mssql" value="server=(local);uid=用户名;pwd=密码;database=数据库"/>
+        <add key="oracle" value="Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=服务名)));User Id=用户名;Password=密码;"/>
+        <add key="mysql" value="server=localhost;user id=用户名;password=密码;database=数据库"/>
+    </appSettings>
+    <connectionStrings>
+        <add name="access" connectionString="数据库" providerName="System.Data.OleDb" />
+        <add name="access2007" connectionString="数据库" providerName="System.Data.OleDb" />
+        <add name="sqlite" connectionString="数据库" providerName="System.Data.SQLite" />
+        <add name="mysql" connectionString="server=localhost;user id=用户名;password=密码;database=数据库" providerName="System.Data.MySqlClient" />
+        <add name="mssql" connectionString="server=(local);uid=用户名;pwd=密码;database=数据库" providerName="System.Data.SqlClient" />
+        <add name="oracle" connectionString="Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=服务名)));User Id=用户名;Password=密码;" providerName="Oracle.ManagedDataAccess.Client"/>
+    </connectionStrings>
 ```
 3>简单调用方式
 ```c#
