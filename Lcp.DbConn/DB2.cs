@@ -1,4 +1,4 @@
-﻿using Oracle.ManagedDataAccess.Client;
+﻿using IBM.Data.DB2;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace Lcp.DbConn
 {
-    public class Oracle: IDataBase, IDisposable
+    public class DB2 : IDataBase, IDisposable
     {
-        public string Name { get { return "Oracle"; } }
-        private OracleConnection _connSql;
+        public string Name { get { return "DB2"; } }
+        private DB2Connection _connSql;
         private readonly string _dataSql;
         private bool _disposed;
         /// <summary>
         /// 初始化MSSQL数据库
         /// </summary>
         /// <param name="connstr"></param>
-        public Oracle(string connstr)
+        public DB2(string connstr)
         {
             _dataSql = connstr;
         }
@@ -31,7 +31,7 @@ namespace Lcp.DbConn
         /// <returns></returns>
         public IDataParameter MyParams(string name, object value)
         {
-            return new OracleParameter(name, value);
+            return new DB2Parameter(name, value);
         }
 
         #region 基本数据库操作
@@ -41,7 +41,7 @@ namespace Lcp.DbConn
         public void Open()
         {
             var connstr = _dataSql;
-            _connSql = new OracleConnection(connstr);
+            _connSql = new DB2Connection(connstr);
             if (_connSql.State == ConnectionState.Open) return;
             try
             {
@@ -75,7 +75,7 @@ namespace Lcp.DbConn
         /// <summary>
         /// 析构函数
         /// </summary>
-        ~Oracle()
+        ~DB2()
         {
             Dispose(false);
         }
@@ -183,9 +183,9 @@ namespace Lcp.DbConn
         public DataSet GetDataSet(string sql, CommandType ctype, int startindex, int pagesize, string dataname, params IDataParameter[] param)
         {
             Open();
-            var cmd = new OracleCommand();
+            var cmd = new DB2Command();
             PrepareCommand(cmd, _connSql, null, ctype, sql, param);
-            using (var dap = new OracleDataAdapter(cmd))
+            using (var dap = new DB2DataAdapter(cmd))
             {
                 var ds = new DataSet();
                 try
@@ -196,7 +196,7 @@ namespace Lcp.DbConn
                     cmd.Dispose();
                     return ds;
                 }
-                catch (OracleException ex)
+                catch (DB2Exception ex)
                 {
                     throw new Exception(ex.Message);
                 }
@@ -218,9 +218,9 @@ namespace Lcp.DbConn
         public DataSet GetDataSet(string sql, CommandType ctype, string dataname, params IDataParameter[] param)
         {
             Open();
-            var cmd = new OracleCommand();
+            var cmd = new DB2Command();
             PrepareCommand(cmd, _connSql, null, ctype, sql, param);
-            using (var dap = new OracleDataAdapter(cmd))
+            using (var dap = new DB2DataAdapter(cmd))
             {
                 var ds = new DataSet();
                 try
@@ -231,7 +231,7 @@ namespace Lcp.DbConn
                     cmd.Dispose();
                     return ds;
                 }
-                catch (OracleException ex)
+                catch (DB2Exception ex)
                 {
                     throw new Exception(ex.Message);
                 }
@@ -252,7 +252,7 @@ namespace Lcp.DbConn
         {
             Open();
             int i;
-            var cmd = new OracleCommand();
+            var cmd = new DB2Command();
             try
             {
                 PrepareCommand(cmd, _connSql, null, ctype, sql, param);
@@ -277,7 +277,7 @@ namespace Lcp.DbConn
         public object GetExecuteScalar(string sql, CommandType ctype, params IDataParameter[] param)
         {
             Open();
-            var cmd = new OracleCommand();
+            var cmd = new DB2Command();
             try
             {
                 PrepareCommand(cmd, _connSql, null, ctype, sql, param);
@@ -302,7 +302,7 @@ namespace Lcp.DbConn
         public IDataReader GetDataReader(string sql, CommandType ctype, params IDataParameter[] param)
         {
             Open();
-            var cmd = new OracleCommand();
+            var cmd = new DB2Command();
             PrepareCommand(cmd, _connSql, null, ctype, sql, param);
             var dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
             cmd.Parameters.Clear();
@@ -319,7 +319,7 @@ namespace Lcp.DbConn
         /// <param name="cmdType">指定如何解释命令字符串</param>
         /// <param name="cmdText">字符串</param>
         /// <param name="cmdParms">参数</param>
-        private static void PrepareCommand(OracleCommand cmd, OracleConnection conn, OracleTransaction trans, CommandType cmdType, string cmdText, params IDataParameter[] cmdParms)
+        private static void PrepareCommand(DB2Command cmd, DB2Connection conn, DB2Transaction trans, CommandType cmdType, string cmdText, params IDataParameter[] cmdParms)
         {
             cmd.Connection = conn;
             cmd.CommandText = cmdText;
@@ -330,7 +330,7 @@ namespace Lcp.DbConn
             cmd.CommandType = cmdType;
 
             if (cmdParms == null) return;
-            foreach (var parameter in cmdParms.Cast<OracleParameter>())
+            foreach (var parameter in cmdParms.Cast<DB2Parameter>())
             {
                 if ((parameter.Direction == ParameterDirection.InputOutput || parameter.Direction == ParameterDirection.Input) &&
                     (parameter.Value == null))
@@ -359,12 +359,12 @@ namespace Lcp.DbConn
         /// <returns>返回被缓存的参数数组</returns>
         public IDataParameter[] GetCachedParameters(string cacheKey)
         {
-            var cachedParms = (OracleParameter[])_parmCache[cacheKey];
+            var cachedParms = (DB2Parameter[])_parmCache[cacheKey];
             if (cachedParms == null)
                 return null;
             IDataParameter[] clonedParms = { };
             for (int i = 0, j = cachedParms.Length; i < j; i++)
-                clonedParms[i] = (OracleParameter)((ICloneable)cachedParms[i]).Clone();
+                clonedParms[i] = (DB2Parameter)((ICloneable)cachedParms[i]).Clone();
             return clonedParms;
         }
 

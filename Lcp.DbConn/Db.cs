@@ -17,7 +17,7 @@ namespace Lcp.DbConn
     /// </summary>
     public enum MyType
     {
-        Access2003, Access2007, Access2013, Access2016, Mssql, Mysql, Oracle, Sqlite
+        Access2003, Access2007, Access2013, Access2016, Mssql, Mysql, Oracle, Sqlite, DB2
     }
     #endregion
     public class Db
@@ -31,9 +31,10 @@ namespace Lcp.DbConn
                 <add key="access" value="数据库"/>
                 <add key="access2007" value="数据库"/>
                 <add key="sqlite" value="数据库"/>
+                <add key="mysql" value="server=localhost;user id=用户名;password=密码;database=数据库"/>
                 <add key="mssql" value="server=(local);uid=用户名;pwd=密码;database=数据库"/>
                 <add key="oracle" value="Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=服务名)));User Id=用户名;Password=密码;"/>
-                <add key="mysql" value="server=localhost;user id=用户名;password=密码;database=数据库"/>
+                <add name="db2" connectionString="Server=localhost;Database=数据库;UID=用户名;PWD=密码;" />
             </appSettings>
 
             <connectionStrings>
@@ -43,10 +44,12 @@ namespace Lcp.DbConn
                 <add name="mysql" connectionString="server=localhost;user id=用户名;password=密码;database=数据库" providerName="System.Data.MySqlClient" />
                 <add name="mssql" connectionString="server=(local);uid=用户名;pwd=密码;database=数据库" providerName="System.Data.SqlClient" />
                 <add name="oracle" connectionString="Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=服务名)));User Id=用户名;Password=密码;" providerName="Oracle.ManagedDataAccess.Client"/>
+                <add name="db2" connectionString="Server=localhost;Database=数据库;UID=用户名;PWD=密码;" providerName="IBM.Data.DB2"/>
             </connectionStrings>
         *================================================================================*/
         #endregion
 
+        #region 连接数据库
         /// <summary>
         /// 处理连接多数据库采用IOC注入
         /// </summary>
@@ -100,6 +103,10 @@ namespace Lcp.DbConn
                     conn = connStr;
                     builder.Register(c => new Oracle(conn)).As<IDataBase>();
                     break;
+                case MyType.DB2:
+                    conn = connStr;
+                    builder.Register(c => new DB2(conn)).As<IDataBase>();
+                    break;
             }
 
             using (var container = builder.Build())
@@ -107,5 +114,7 @@ namespace Lcp.DbConn
                 return container.Resolve<DataBaseManager>();
             }
         }
+        #endregion
+        
     }
 }

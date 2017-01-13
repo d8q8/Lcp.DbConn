@@ -14,7 +14,7 @@
 //枚举数据库类型
 public enum MyType
 {
-    Access2003, Access2007, Access2013, Access2016, Mssql, Mysql, Oracle, Sqlite
+    Access2003, Access2007, Access2013, Access2016, Mssql, Mysql, Oracle, Sqlite, DB2
 }
 //使用很简单,如MyType.Access2003
 ```
@@ -28,9 +28,10 @@ public enum MyType
         <add key="access" value="数据库"/>
         <add key="access2007" value="数据库"/>
         <add key="sqlite" value="数据库"/>
+        <add key="mysql" value="server=localhost;user id=用户名;password=密码;database=数据库"/>
         <add key="mssql" value="server=(local);uid=用户名;pwd=密码;database=数据库"/>
         <add key="oracle" value="Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=服务名)));User Id=用户名;Password=密码;"/>
-        <add key="mysql" value="server=localhost;user id=用户名;password=密码;database=数据库"/>
+        <add name="db2" connectionString="Server=localhost;Database=数据库;UID=用户名;PWD=密码;" />
     </appSettings>
     <connectionStrings>
         <add name="access" connectionString="数据库" providerName="System.Data.OleDb" />
@@ -39,6 +40,7 @@ public enum MyType
         <add name="mysql" connectionString="server=localhost;user id=用户名;password=密码;database=数据库" providerName="System.Data.MySqlClient" />
         <add name="mssql" connectionString="server=(local);uid=用户名;pwd=密码;database=数据库" providerName="System.Data.SqlClient" />
         <add name="oracle" connectionString="Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=服务名)));User Id=用户名;Password=密码;" providerName="Oracle.ManagedDataAccess.Client"/>
+        <add name="db2" connectionString="Server=localhost;Database=数据库;UID=用户名;PWD=密码;" providerName="IBM.Data.DB2"/>
     </connectionStrings>
 ```
 3>简单调用方式
@@ -48,7 +50,13 @@ using (var _db = Db.GetConn(MyType.Sqlite, "sqlite"))//Sqlite数据库
 {
     const string sql = "select * from admin";
     var dt = _db.MyDt(sql);
-    Console.Write("用户名:{0},密码:{1}", dt.Rows[0]["username"], dt.Rows[0]["password"]);
+    if (dt != null)
+    {
+        foreach (DataRow dr in dt.Rows)
+        {
+            Console.WriteLine("用户名:{0},密码:{1}", dr["username"], dr["password"]);
+        }
+    }
 }
 ```
 4>其他调用方式
