@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Lcp.DbConn
 {
-    public class Sqlite:IDataBase,IDisposable
+    public class Sqlite : IDataBase, IDisposable
     {
         public string Name { get { return "Sqlite"; } }
         private SQLiteConnection _connSql;
@@ -175,7 +175,7 @@ namespace Lcp.DbConn
             PrepareCommand(cmd, _connSql, null, ctype, sql, param);
             using (var dap = new SQLiteDataAdapter(cmd))
             {
-                DataSet ds = new DataSet();
+                var ds = new DataSet();
                 try
                 {
                     ds.Clear();
